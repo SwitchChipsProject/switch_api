@@ -9,13 +9,11 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserLocationEntity {
-
     private Long userLocationId;
     private Long latitude;
     private Long longtitude;
     private String address;
     private Long userId;
-    protected LocalDateTime createdAt;
-    protected LocalDateTime deletedAt;
-    protected String deletedYn;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

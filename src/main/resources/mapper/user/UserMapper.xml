@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.switch_proj.api.api.user.UserMapper">
-    <resultMap id="userMap" type="User">
-        <id property="userId" column="USER_ID" />
-       </resultMap>
-
+<mapper namespace="com.switch_proj.api.api.user.mapper.UserMapper">
+    <insert id="saveUser">
+    insert into user (user_id,password,nickname,image_id,created_at,deleted_at,deleted_yn,role,email)
+    values
+        (null,#{user.password},#{user.nickname},null,current_timestamp,null,"N",#{user.role},#{user.email})
+    </insert>
 </mapper>

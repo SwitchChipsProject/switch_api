@@ -1,31 +1,34 @@
 package com.switch_proj.api.api.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.switch_proj.api.api.auth.enums.AuthEnums;
 import com.switch_proj.api.api.user.entity.UserEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
-
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 @Getter
-public class User {
+public class User{
     private Long userId;
     private String password;
     private String email;
     private String nickname;
-    private String role;
-    private PasswordEncoder passwordEncoder;
+    private AuthEnums.ROLE role;
+    private String agreeYn;
+    private UserLocation userLocation;
 
-    public User(Long userId, String password, String email, String nickname, String role,PasswordEncoder passwordEncoder) {
-        this.userId = userId;
-        this.password = password;
-        this.email = email;
-        this.nickname = nickname;
-        this.role = role;
-        this.passwordEncoder = passwordEncoder;
+    public static UserEntity toEntity(User user){
+        UserEntity userEntity = UserEntity.builder()
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .password(user.getPassword())
+                .role(AuthEnums.ROLE.ROLE_USER)
+                .build();
+        return userEntity;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 }
