@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Mapper
 public interface UserMapper {
     void saveUser(@Param("user") UserEntity user);
+    void updateEmailCertificationState(@Param("userId") Long userId);
+    UserEntity findByCertificationCode(@Param("termUuid")String termUuid);
 
     UserDetails findByUserEmail(@Param("userEmail") String userEmail);
 }

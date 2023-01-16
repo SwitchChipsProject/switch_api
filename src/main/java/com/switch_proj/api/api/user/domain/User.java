@@ -17,18 +17,6 @@ public class User{
     private String agreeYn;
     private UserLocation userLocation;
 
-    public static UserEntity toEntity(User user){
-        UserEntity userEntity = UserEntity.builder()
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .password(user.getPassword())
-                .role(AuthEnums.ROLE.ROLE_USER)
-                .build();
-        return userEntity;
-    }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
 }

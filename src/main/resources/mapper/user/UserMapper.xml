@@ -2,8 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.switch_proj.api.api.user.mapper.UserMapper">
     <insert id="saveUser">
-    insert into user (user_id,password,nickname,image_id,created_at,deleted_at,deleted_yn,role,email)
+    insert into switch.user (user_id,password,nickname,image_id,created_at,deleted_at,deleted_yn,role,email,certification_code)
     values
-        (null,#{user.password},#{user.nickname},null,current_timestamp,null,"N",#{user.role},#{user.email})
+        (null,#{user.password},#{user.nickname},null,current_timestamp,null,"N",#{user.role},#{user.email},#{user.certificationCode})
     </insert>
+    <select id="findByCertificationCode" resultType="com.switch_proj.api.api.user.entity.UserEntity">
+        select * from switch.user
+        where certification_code = #{termUuid}
+    </select>
+    <update id="updateEmailCertificationState">
+        UPDATE user SET
+            email_certification= true
+        WHERE user_id= #{userId}
+    </update>
 </mapper>

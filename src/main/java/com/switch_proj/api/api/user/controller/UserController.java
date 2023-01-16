@@ -5,6 +5,7 @@ import com.switch_proj.api.api.user.service.UserService;
 import com.switch_proj.api.api.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,8 +24,12 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> signUp(@Valid @RequestBody User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userService.saveUser(user);
+         userService.saveUser(user);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PostMapping("/certification/{term-uuid}")
+    public ResponseEntity<User> certificationEmail( @PathVariable("term-uuid") String termUuid){
+        userService.certificationEmail(termUuid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
