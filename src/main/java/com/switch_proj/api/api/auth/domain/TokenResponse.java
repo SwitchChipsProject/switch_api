@@ -8,12 +8,12 @@ import lombok.*;
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 
 public class TokenResponse {
-    private UserEntity user;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
     @Builder
-    public TokenResponse(UserEntity user, String token) {
-        this.user = user;
-        this.token = token;
+    public TokenResponse(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

@@ -1,18 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.switch_proj.api.api.user.mapper.UserMapper">
-    <insert id="saveUser">
-    insert into switch.user (user_id,password,nickname,image_id,created_at,deleted_at,deleted_yn,role,email,certification_code)
-    values
-        (null,#{user.password},#{user.nickname},null,current_timestamp,null,"N",#{user.role},#{user.email},#{user.certificationCode})
+
+    <insert id="saveUser" useGeneratedKeys="true"
+            keyProperty="userId" keyColumn="user_id">
+        insert into switch.user (password, nickname, image_id, created_at, deleted_at, deleted_yn, role, email,
+                                 certification_code)
+        values (#{user.password}, #{user.nickname}, null, current_timestamp, null, "N", #{user.role}, #{user.email},
+                #{user.certificationCode})
     </insert>
+
+    <insert id="saveUserLocation">
+        insert into user_location (user_location_id, latitude, longitude, address, created_at, user_id)
+        values (null, #{userLocation.latitude}, #{userLocation.longitude}, #{userLocation.address}, current_timestamp,
+                #{userLocation.userId})
+    </insert>
+
     <select id="findByCertificationCode" resultType="com.switch_proj.api.api.user.entity.UserEntity">
-        select * from switch.user
+        select *
+        from switch.user
         where certification_code = #{termUuid}
     </select>
+
     <update id="updateEmailCertificationState">
-        UPDATE user SET
-            email_certification= true
-        WHERE user_id= #{userId}
+        UPDATE user
+        SET certification= true
+        WHERE user_id = #{userId}
     </update>
+
+    <select id="findByUserEmail" resultType="com.switch_proj.api.api.user.entity.UserEntity">
+        select *
+        from user
+        where email = #{userEmail}
+    </select>
+
+    <select id="findByUserName">
+        select *
+        from user
+        where email = #{username}
+    </select>
+    <select id="findByUserId" resultType="Long">
+        select user_id
+        from user
+        where user_id = #{userId}
+    </select>
+    <select id="existByUserEmail" resultType="Boolean">
+        select count(*)
+        from user
+        where email = #{email}
+    </select>
+
+
 </mapper>

@@ -5,13 +5,15 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access= AccessLevel.PROTECTED)
 public class Token {
-    private Long expiredIn;
-    private String value;
+    private String accessToken;
+    private String refreshToken;
     private String key;
     @Builder
-    public Token(String key, String value, Long expiredIn) {
+    public Token(String accessToken, String refreshToken, String key) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.key = key;
-        this.value = value;
-        this.expiredIn = expiredIn;
     }
+
+
 }
