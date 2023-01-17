@@ -18,14 +18,4 @@ public class User {
     private String role;
     private PasswordEncoder passwordEncoder;
 
-    public User(Long userId, String password, String email, String nickname, String role,PasswordEncoder passwordEncoder) {
-        this.userId = userId;
-        this.password = password;
-        this.email = email;
-        this.nickname = nickname;
-        this.role = role;
-        this.passwordEncoder = passwordEncoder;
-    }
-
-
 }

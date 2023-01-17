@@ -13,7 +13,7 @@ public class ChipExchangeEntity {
     private Long ownedChipId;
     private Long oppositeChipId;
     private Long registerId;
-    protected LocalDateTime createdAt;
-    protected LocalDateTime deletedAt;
-    protected String deletedYn;
+    private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
+    private String deletedYn;
 }

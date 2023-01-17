@@ -19,8 +19,8 @@ public class UserEntity {
     private String role;
     private String email;
     private String agreeYn;
-    protected LocalDateTime createdAt;
-    protected LocalDateTime deletedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
 
 @Builder
     public UserEntity(Long userId, String password, String nickname, Long imageId, String deletedYn, String role, String email, String agreeYn) {

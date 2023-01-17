@@ -15,7 +15,7 @@ public class UserLocationEntity {
     private Long longtitude;
     private String address;
     private Long userId;
-    protected LocalDateTime createdAt;
-    protected LocalDateTime deletedAt;
-    protected String deletedYn;
+    private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
+    private String deletedYn;
 }

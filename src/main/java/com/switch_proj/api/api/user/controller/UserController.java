@@ -2,6 +2,7 @@ package com.switch_proj.api.api.user.controller;
 
 import com.switch_proj.api.api.user.service.UserService;
 import com.switch_proj.api.api.user.domain.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,14 +13,10 @@ import javax.validation.Valid;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/user")
 public class UserController {
-    private UserService userService;
-    private PasswordEncoder passwordEncoder;
-
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
-        this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
 }
