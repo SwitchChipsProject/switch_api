@@ -2,12 +2,11 @@ package com.switch_proj.api.api.auth.filter;
 
 
 import com.switch_proj.api.api.auth.utils.JwtTokenProvider;
-import com.switch_proj.api.api.auth.service.TokenService;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -27,14 +26,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 1. Request Header 에서 토큰을 꺼냄
-        String jwt = jwtTokenProvider.resolveToken(request);
-        // 2. validateToken 으로 토큰 유효성 검사
-        // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
-        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-           Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
-        filterChain.doFilter(request, response);
+     try {
+         String path = request.getServletPath();
+         if(path.startsWith("/api/auth/reissue")){
+             filterChain.doFilter(request,response);
+         }
+         else
+         {
+             String accessToken = jwtTokenProvider.resolveAccessToken(request);
+             boolean isVaild = jwtTokenProvider.validateToken(accessToken,request);
+             if(StringUtils.hasText(accessToken)&& isVaild){
+                 this.setAuthentication(accessToken);
+             }
+             filterChain.doFilter(request,response);
+         }
+     }
+     catch (ExpiredJwtException e){
+         return;
+     }
+    }
+    private void setAuthentication(String token){
+        Authentication authentication = jwtTokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

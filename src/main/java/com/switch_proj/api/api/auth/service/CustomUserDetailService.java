@@ -13,7 +13,8 @@ public class CustomUserDetailService implements UserDetailsService {
     //필터에서 처리할 서비스
     private UserMapper userMapper;
     @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        return userMapper.findByUserEmail(userEmail);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+       UserDetails userEntity =  userMapper.findByUserName(username);
+        return userEntity;
     }
 }

@@ -1,13 +1,19 @@
 package com.switch_proj.api.api.auth.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import com.switch_proj.api.api.user.domain.User;
+import com.switch_proj.api.api.user.entity.UserEntity;
 import lombok.*;
 
-@RequiredArgsConstructor
+@Getter
+@NoArgsConstructor(access= AccessLevel.PROTECTED)
+
 public class TokenResponse {
-    private User user;
-    private Token token;
+    private UserEntity user;
+    private String token;
+
+    @Builder
+    public TokenResponse(UserEntity user, String token) {
+        this.user = user;
+        this.token = token;
+    }
 }

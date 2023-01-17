@@ -1,6 +1,7 @@
 package com.switch_proj.api.api.user.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.switch_proj.api.api.auth.domain.Token;
 import com.switch_proj.api.api.auth.enums.AuthEnums;
 import com.switch_proj.api.api.user.entity.UserEntity;
 import lombok.*;
@@ -16,6 +17,7 @@ public class User{
     private AuthEnums.ROLE role;
     private String agreeYn;
     private UserLocation userLocation;
+    private String accessToken;
 
 
 

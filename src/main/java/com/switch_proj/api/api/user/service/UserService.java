@@ -1,6 +1,9 @@
 package com.switch_proj.api.api.user.service;
 
+import com.switch_proj.api.api.auth.domain.Token;
+import com.switch_proj.api.api.auth.domain.TokenResponse;
 import com.switch_proj.api.api.auth.enums.AuthEnums;
+import com.switch_proj.api.api.auth.utils.JwtTokenProvider;
 import com.switch_proj.api.api.user.domain.User;
 
 import com.switch_proj.api.api.user.domain.UserLocation;
@@ -14,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Service
@@ -21,8 +25,22 @@ import java.util.UUID;
 public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
     private final EmailSenderService emailSenderService;
 
+    public TokenResponse login(User user, HttpServletResponse response){
+        UserEntity userEntity = userMapper.findByUserEmail(user.getEmail());
+        if(!passwordEncoder.matches(user.getPassword(),userEntity.getPassword()))
+            throw new RuntimeException();
+
+        Token accessToken = jwtTokenProvider.createAccessToken(userEntity);
+        Token refreshToken =jwtTokenProvider.createRefreshToken(userEntity);
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken.getValue());
+        return TokenResponse.builder()
+                .token(accessToken.getValue())
+                .user(userEntity)
+                .build();
+    }
     public void saveUser(User user) {
         //TODO : 예외처리 필요, 위치 정보 추가
         UserEntity userEntity = UserEntity.builder()

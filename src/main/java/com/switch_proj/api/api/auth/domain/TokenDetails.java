@@ -1,6 +1,5 @@
 package com.switch_proj.api.api.auth.domain;
 
-import com.switch_proj.api.api.auth.enums.AuthEnums;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
