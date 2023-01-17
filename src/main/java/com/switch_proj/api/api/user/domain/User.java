@@ -19,6 +19,4 @@ public class User{
     private UserLocation userLocation;
     private String accessToken;
 
-
-
 }

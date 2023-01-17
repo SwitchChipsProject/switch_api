@@ -15,7 +15,7 @@ public class ChipEntity {
     private String description;
     private Long imageId;
     private Long categoryId;
-    protected LocalDateTime createdAt;
-     protected LocalDateTime deletedAt;
-    protected String deletedYn;
+    private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
+    private String deletedYn;
 }
