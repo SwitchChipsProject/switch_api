@@ -1,6 +1,7 @@
 package com.switch_proj.api.api.image.entity;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,4 +18,12 @@ public class ImageEntity {
     private String endPoint;
     protected LocalDateTime createdAt;
     protected LocalDateTime deletedAt;
+    @Builder
+    public ImageEntity(Long imageId, String originalFileName, Long fileSize, String fileName, String endPoint) {
+        this.imageId = imageId;
+        this.originalFileName = originalFileName;
+        this.fileSize = fileSize;
+        this.fileName = fileName;
+        this.endPoint = endPoint;
+    }
 }

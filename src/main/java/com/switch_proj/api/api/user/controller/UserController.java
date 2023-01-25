@@ -1,12 +1,18 @@
 package com.switch_proj.api.api.user.controller;
-import com.switch_proj.api.api.auth.domain.TokenResponse;
+
+import com.switch_proj.api.api.auth.dto.TokenResponse;
+import com.switch_proj.api.api.image.service.ImageService;
 import com.switch_proj.api.api.user.service.UserService;
-import com.switch_proj.api.api.user.domain.User;
+import com.switch_proj.api.api.user.dto.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -32,5 +38,6 @@ public class UserController {
         userService.certificationEmail(termUuid);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 
 }

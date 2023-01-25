@@ -1,4 +1,4 @@
-package com.switch_proj.api.api.exception.domain;
+package com.switch_proj.api.api.exception.dto;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

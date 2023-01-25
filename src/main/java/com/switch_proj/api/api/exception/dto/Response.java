@@ -1,9 +1,7 @@
-package com.switch_proj.api.api.exception.domain;
+package com.switch_proj.api.api.exception.dto;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class Response<T> {

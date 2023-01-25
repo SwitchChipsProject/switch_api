@@ -1,12 +1,12 @@
 package com.switch_proj.api.api.user.service;
 
-import com.switch_proj.api.api.auth.domain.TokenResponse;
+import com.switch_proj.api.api.auth.dto.TokenResponse;
 import com.switch_proj.api.api.auth.enums.AuthEnums;
 import com.switch_proj.api.api.auth.utils.JwtTokenProvider;
-import com.switch_proj.api.api.exception.domain.BadRequestException;
-import com.switch_proj.api.api.exception.domain.ExceptionEnum;
-import com.switch_proj.api.api.user.domain.User;
-import com.switch_proj.api.api.user.domain.UserLocation;
+import com.switch_proj.api.api.exception.dto.BadRequestException;
+import com.switch_proj.api.api.exception.dto.ExceptionEnum;
+import com.switch_proj.api.api.user.dto.User;
+import com.switch_proj.api.api.user.dto.UserLocation;
 import com.switch_proj.api.api.user.entity.UserEntity;
 import com.switch_proj.api.api.user.entity.UserLocationEntity;
 import com.switch_proj.api.api.user.mapper.UserMapper;
@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -31,13 +32,8 @@ public class UserService {
         //TODO : 예외처리
         // 이메일이 맞지 않을 경우 예외처리
         UserEntity userEntity = userMapper.findByUserEmail(user.getEmail());
-
-        String accessToken = jwtTokenProvider.createAccessToken(userEntity);
-        String refreshToken = jwtTokenProvider.createRefreshToken(userEntity);
-
         return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+
                 .build();
     }
 
@@ -73,8 +69,10 @@ public class UserService {
     @Transactional
     public void certificationEmail(String termUuid) {
         UserEntity userEntity = userMapper.findByCertificationCode(termUuid);
-        if (!userEntity.isEmailCertification())
+        if (!userEntity.isCertificatied())
             throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "인증되지 않은 이메일입니다.");
         userMapper.updateEmailCertificationState(userEntity.getUserId());
     }
+
+
 }

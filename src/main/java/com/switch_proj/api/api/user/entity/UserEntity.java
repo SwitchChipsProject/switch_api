@@ -19,10 +19,10 @@ public class UserEntity {
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
     private String certificationCode;
-    private boolean emailCertification;
+    private boolean isCertificatied;
 
-@Builder
-    public UserEntity(Long userId, String password, String nickname, Long imageId, String deletedYn, AuthEnums.ROLE role, String email, String agreeYn, String certificationCode, boolean emailCertification) {
+    @Builder
+    public UserEntity(Long userId, String password, String nickname, Long imageId, String deletedYn, AuthEnums.ROLE role, String email, String agreeYn, String certificationCode, boolean isCertificatied) {
         this.userId = userId;
         this.password = password;
         this.nickname = nickname;
@@ -32,7 +32,7 @@ public class UserEntity {
         this.email = email;
         this.agreeYn = agreeYn;
         this.certificationCode = certificationCode;
-        this.emailCertification = emailCertification;
+        this.isCertificatied = isCertificatied;
     }
 
 }
