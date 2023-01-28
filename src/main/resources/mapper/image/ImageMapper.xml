@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.switch_proj.api.api.image.mapper.ImageMapper">
+    <insert id="save" useGeneratedKeys="true"
+            keyProperty="imageId" keyColumn="image_id">
+        INSERT INTO image (orginal_filename,
+                           filesize,
+                           file_name,
+                           endpoint)
+        VALUES (#{imageEntity.originalFileName},
+                #{imageEntity.fileSize},
+                #{imageEntity.fileName},
+                #{imageEntity.endPoint})
+    </insert>
+</mapper>

@@ -1,10 +1,7 @@
 package com.switch_proj.api.api.user.entity;
 
-import com.switch_proj.api.api.user.domain.User;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.switch_proj.api.api.auth.enums.AuthEnums;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,14 +13,16 @@ public class UserEntity {
     private String nickname;
     private Long imageId;
     private String deletedYn;
-    private String role;
+    private AuthEnums.ROLE role;
     private String email;
     private String agreeYn;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
+    private String certificationCode;
+    private boolean isCertificatied;
 
-@Builder
-    public UserEntity(Long userId, String password, String nickname, Long imageId, String deletedYn, String role, String email, String agreeYn) {
+    @Builder
+    public UserEntity(Long userId, String password, String nickname, Long imageId, String deletedYn, AuthEnums.ROLE role, String email, String agreeYn, String certificationCode, boolean isCertificatied) {
         this.userId = userId;
         this.password = password;
         this.nickname = nickname;
@@ -32,5 +31,8 @@ public class UserEntity {
         this.role = role;
         this.email = email;
         this.agreeYn = agreeYn;
+        this.certificationCode = certificationCode;
+        this.isCertificatied = isCertificatied;
     }
+
 }
