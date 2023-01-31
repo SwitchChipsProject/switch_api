@@ -3,6 +3,7 @@ package com.switch_proj.api.api.auth.filter;
 
 import com.switch_proj.api.api.auth.utils.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -10,43 +11,32 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private JwtTokenProvider jwtTokenProvider;
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter{
+    private final JwtTokenProvider jwtTokenProvider;
+    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String BEARER_PREFIX = "Bearer ";
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-     try {
-         String path = request.getServletPath();
-         if(path.startsWith("/api/auth/reissue")){
-             filterChain.doFilter(request,response);
-         }
-         else
-         {
-             String accessToken = jwtTokenProvider.resolveAccessToken(request);
-             boolean isVaild = jwtTokenProvider.validateToken(accessToken,request);
-             if(StringUtils.hasText(accessToken)&& isVaild){
-                 this.setAuthentication(accessToken);
-             }
-             filterChain.doFilter(request,response);
-         }
-     }
-     catch (ExpiredJwtException e){
-         return;
-     }
-    }
-    private void setAuthentication(String token){
-        Authentication authentication = jwtTokenProvider.getAuthentication(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = resolveToken(request);
+        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        filterChain.doFilter(request, response);
     }
 }
