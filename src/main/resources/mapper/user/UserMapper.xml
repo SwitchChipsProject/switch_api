@@ -43,8 +43,8 @@
     </insert>
 
     <select id="findByCertificationCode" resultType="UserEntity">
-        SELECT user_id
-        FROM switch.user
+        SELECT *
+        FROM user
         WHERE certification_code = #{termUuid}
     </select>
 
@@ -55,15 +55,9 @@
     </update>
 
     <select id="findByUserEmail" resultType="UserEntity">
-        SELECT email
-        FROM user
-        WHERE email = #{userEmail}
-    </select>
-
-    <select id="findByUserName">
-        SELECT user_id
-        FROM user
-        WHERE email = #{username}
+       SELECT *
+       FROM user
+       WHERE email = #{email}
     </select>
 
     <select id="findByUserId" resultType="Long">
@@ -76,6 +70,5 @@
         FROM user
         WHERE email = #{email}
     </select>
-
 
 </mapper>
