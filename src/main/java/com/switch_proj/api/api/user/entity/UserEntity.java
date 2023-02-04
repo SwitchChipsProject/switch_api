@@ -1,6 +1,7 @@
 package com.switch_proj.api.api.user.entity;
 
 import com.switch_proj.api.api.auth.enums.AuthEnums;
+
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ public class UserEntity {
     private String nickname;
     private Long imageId;
     private String deletedYn;
+
     private AuthEnums.ROLE role;
     private String email;
     private String agreeYn;

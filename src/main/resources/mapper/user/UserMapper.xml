@@ -20,10 +20,10 @@
     <insert id="saveUser" useGeneratedKeys="true"
             keyProperty="userId" keyColumn="user_id">
         INSERT INTO user (password,
-                                 nickname,
-                                 role,
-                                 email,
-                                 certification_code)
+                          nickname,
+                          role,
+                          email,
+                          certification_code)
         VALUES (#{user.password},
                 #{user.nickname},
                 #{user.role},
@@ -36,15 +36,15 @@
                                    longitude,
                                    address,
                                    user_id)
-        VALUES ( #{userLocation.latitude},
+        VALUES (#{userLocation.latitude},
                 #{userLocation.longitude},
                 #{userLocation.address},
                 #{userLocation.userId})
     </insert>
 
     <select id="findByCertificationCode" resultType="UserEntity">
-        SELECT user_id
-        FROM switch.user
+        SELECT *
+        FROM user
         WHERE certification_code = #{termUuid}
     </select>
 
@@ -55,15 +55,9 @@
     </update>
 
     <select id="findByUserEmail" resultType="UserEntity">
-        SELECT email
+        SELECT *
         FROM user
-        WHERE email = #{userEmail}
-    </select>
-
-    <select id="findByUserName">
-        SELECT user_id
-        FROM user
-        WHERE email = #{username}
+        WHERE email = #{email}
     </select>
 
     <select id="findByUserId" resultType="Long">
@@ -71,11 +65,17 @@
         FROM user
         WHERE user_id = #{userId}
     </select>
+
     <select id="existByUserEmail" resultType="Boolean">
         SELECT count(email)
         FROM user
         WHERE email = #{email}
     </select>
 
+    <select id="existByNickname" resultType="Boolean">
+        SELECT count(nickname)
+        FROM user
+        WHERE nickname = #{nickname}
+    </select>
 
 </mapper>

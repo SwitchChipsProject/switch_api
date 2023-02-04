@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Optional;
+
 @Mapper
 public interface UserMapper {
     void saveUser(@Param("user") UserEntity user);
@@ -13,7 +15,6 @@ public interface UserMapper {
     void saveUserLocation(@Param("userLocation") UserLocationEntity userLocation);
     boolean existByUserEmail(@Param("email") String email);
     UserEntity findByCertificationCode(@Param("termUuid") String termUuid);
-    UserEntity findByUserEmail(@Param("userEmail") String userEmail);
-    UserDetails findByUserName(@Param("username") String username);
-
+    Optional<UserEntity> findByUserEmail(@Param("email") String email);
+    boolean existByNickname(@Param("nickname")String nickname);
 }

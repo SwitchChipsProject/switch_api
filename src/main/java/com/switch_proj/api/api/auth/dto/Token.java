@@ -7,12 +7,11 @@ import lombok.*;
 public class Token {
     private String accessToken;
     private String refreshToken;
-    private String key;
+
     @Builder
-    public Token(String accessToken, String refreshToken, String key) {
+    public Token(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.key = key;
     }
 
 

@@ -1,8 +1,7 @@
 package com.switch_proj.api.api.user.service;
 
-import com.switch_proj.api.api.auth.dto.TokenResponse;
 import com.switch_proj.api.api.auth.enums.AuthEnums;
-import com.switch_proj.api.api.auth.utils.JwtTokenProvider;
+import com.switch_proj.api.api.auth.utils.SecurityUtil;
 import com.switch_proj.api.api.exception.dto.BadRequestException;
 import com.switch_proj.api.api.exception.dto.ExceptionEnum;
 import com.switch_proj.api.api.user.dto.User;
@@ -11,36 +10,28 @@ import com.switch_proj.api.api.user.entity.UserEntity;
 import com.switch_proj.api.api.user.entity.UserLocationEntity;
 import com.switch_proj.api.api.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
 import java.util.UUID;
 
-@Slf4j
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
     private final EmailSenderService emailSenderService;
-
-    public TokenResponse login(User user) {
-        //TODO : 예외처리
-        // 이메일이 맞지 않을 경우 예외처리
-        UserEntity userEntity = userMapper.findByUserEmail(user.getEmail());
-        return TokenResponse.builder()
-
-                .build();
-    }
 
     @Transactional
     public void saveUser(User user) {
         if (userMapper.existByUserEmail(user.getEmail()))
             throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "이미 가입되어있는 이메일입니다.");
+
+        if (userMapper.existByNickname(user.getNickname()))
+            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "중복된 닉네임입니다.");
 
         UserEntity userEntity = UserEntity.builder()
                 .email(user.getEmail())
@@ -74,5 +65,10 @@ public class UserService {
         userMapper.updateEmailCertificationState(userEntity.getUserId());
     }
 
+    @Transactional(readOnly = true)
+    public UserEntity getMyUserWithAuthorities(){
+        return SecurityUtil.getCurrentUsername().flatMap(userMapper::findByUserEmail)
+                .orElseThrow(()-> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND));
+    }
 
 }
