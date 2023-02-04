@@ -48,7 +48,7 @@ public class UserController {
 
     private void validateParams(User user) {
         if (user.getUserLocation().getLatitude() == null || user.getUserLocation().getLatitude() == null || user.getUserLocation().getAddress() == null) {
-            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_MISSING);
+            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_MISSING,"위치 정보가 입력되지 않았습니다.");
         }
     }
 
