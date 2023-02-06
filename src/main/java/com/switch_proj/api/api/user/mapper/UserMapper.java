@@ -11,10 +11,16 @@ import java.util.Optional;
 @Mapper
 public interface UserMapper {
     void saveUser(@Param("user") UserEntity user);
+
     void updateEmailCertificationState(@Param("userId") Long userId);
+
     void saveUserLocation(@Param("userLocation") UserLocationEntity userLocation);
+
     boolean existByUserEmail(@Param("email") String email);
-    UserEntity findByCertificationCode(@Param("termUuid") String termUuid);
+
+    Optional<UserEntity> findByCertificationCode(@Param("tempUuid") String tempUuid);
+
     Optional<UserEntity> findByUserEmail(@Param("email") String email);
-    boolean existByNickname(@Param("nickname")String nickname);
+
+    boolean existByNickname(@Param("nickname") String nickname);
 }

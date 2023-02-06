@@ -13,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -26,6 +28,8 @@ public class UserService {
 
     @Transactional
     public void saveUser(User user) {
+        validateParams(user.getUserLocation());
+
         if (userMapper.existByUserEmail(user.getEmail()))
             throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "이미 가입되어있는 이메일입니다.");
 
@@ -57,17 +61,28 @@ public class UserService {
     }
 
     @Transactional
-    public void certificationEmail(String termUuid) {
-        UserEntity userEntity = userMapper.findByCertificationCode(termUuid);
+    public void certificationEmail(String tempUuid) {
+        UserEntity userEntity = userMapper.findByCertificationCode(tempUuid)
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "올바른 인증 메일 주소가 아닙니다"));
         if (!userEntity.isCertificatedYn())
-            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID , "이미 인증된 메일입니다");
+            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "이미 인증된 메일입니다");
         userMapper.updateEmailCertificationState(userEntity.getUserId());
     }
 
     @Transactional(readOnly = true)
-    public UserEntity getMyUserWithAuthorities(){
+    public UserEntity getMyUserWithAuthorities() {
         return SecurityUtil.getCurrentUsername().flatMap(userMapper::findByUserEmail)
-                .orElseThrow(()-> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND));
+                .orElseThrow(() -> new BadRequestException(ExceptionEnum.RESPONSE_NOT_FOUND));
+    }
+
+    public void validateParams(UserLocation userLocation) {
+        if (( ObjectUtils.isEmpty(userLocation.getLongitude()) ||
+                ObjectUtils.isEmpty(userLocation.getLatitude()) ||
+                (ObjectUtils.isEmpty(userLocation.getAddress())
+                )
+        ))
+        {   throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_MISSING, "위치 정보가 입력되지 않았습니다.");}
+
     }
 
 }

@@ -40,7 +40,7 @@ public class JwtTokenProvider implements InitializingBean {
     private Key refreshKey;
 
     @Override
-    public void afterPropertiesSet() { // 실행 시점에서 key 초기화
+    public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         byte[] refreshKeyBytes = Decoders.BASE64.decode(refreshSecret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -86,17 +86,57 @@ public class JwtTokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
+    public Authentication getRefreshAuthentication(String refreshToken) {
+        Claims claims = parseClaims(refreshToken);
+        if (claims.get(AUTHORITIES_KEY) == null) {
+            throw new BadRequestException(ExceptionEnum.RESPONSE_TOKEN_INVALID, "권한 정보가 없는 토큰입니다.");
+        }
+
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
+
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    }
+
+
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
     }
 
-    public boolean validateToken(String jwtToken) {
+    private Claims parseRefreshClaims(String refreshToken) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(jwtToken);
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
+    public boolean validateAccessToken(String accessToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            logger.info("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException e) {
+            logger.info("만료된 JWT 토큰입니다.");
+        } catch (UnsupportedJwtException e) {
+            logger.info("지원되지 않는 JWT 토큰입니다.");
+        } catch (IllegalArgumentException e) {
+            logger.info("JWT 토큰이 잘못되었습니다.");
+        }
+        return false;
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Jwts.parserBuilder().setSigningKey(refreshKey).build().parseClaimsJws(refreshToken);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");

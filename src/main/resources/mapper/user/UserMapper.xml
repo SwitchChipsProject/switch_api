@@ -51,7 +51,7 @@
             u.agree_yn,
             u.certification_yn
         from user u
-        WHERE certification_code = #{termUuid}
+        WHERE certification_code = #{tempUuid}
     </select>
 
     <update id="updateEmailCertificationState">
@@ -61,11 +61,7 @@
     </update>
 
     <select id="findByUserEmail" resultType="UserEntity">
-        SELECT u.email,
-               u.password,
-               u.user_id,
-               u.nickname,
-               u.agree_yn
+        SELECT *
         FROM user u
         WHERE email = #{email}
     </select>

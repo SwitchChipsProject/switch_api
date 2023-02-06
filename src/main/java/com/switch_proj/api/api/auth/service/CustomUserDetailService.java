@@ -5,7 +5,6 @@ import com.switch_proj.api.api.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +21,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-       return  userMapper.findByUserEmail(email)
+        return userMapper.findByUserEmail(email)
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException(email + " 존재하지 않는 email 입니다."));
 
