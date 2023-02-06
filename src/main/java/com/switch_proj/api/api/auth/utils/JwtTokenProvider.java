@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,19 +24,27 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
-public class JwtTokenProvider {
+public class JwtTokenProvider implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
     private static final String AUTHORITIES_KEY = "auth";
-    private Key key;
+
     @Value("${jwt.expirationDateInMinute}")
     private long ACCESS_TOKEN_EXPIRE_TIME;
     @Value("${jwt.refreshTokenExpirationDateInMinute}")
     private long REFRESH_TOKEN_EXPIRE_TIME;
+    @Value("${jwt.refreshSecret}")
+    private String refreshSecret;
+    @Value("${jwt.secret}")
+    private String secret;
+    private Key key;
+    private Key refreshKey;
 
-
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+    @Override
+    public void afterPropertiesSet() { // 실행 시점에서 key 초기화
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        byte[] refreshKeyBytes = Decoders.BASE64.decode(refreshSecret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.refreshKey = Keys.hmacShaKeyFor(refreshKeyBytes);
     }
 
     public String createAccessToken(Authentication authentication, String authorities) {
@@ -44,7 +53,7 @@ public class JwtTokenProvider {
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(key,SignatureAlgorithm.HS512)
                 .compact();
 
         return accessToken;
@@ -56,7 +65,7 @@ public class JwtTokenProvider {
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(refreshKey,SignatureAlgorithm.HS512)
                 .compact();
 
         return refreshToken;
@@ -64,7 +73,6 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
-
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new BadRequestException(ExceptionEnum.RESPONSE_TOKEN_INVALID, "권한 정보가 없는 토큰입니다.");
         }
@@ -75,13 +83,12 @@ public class JwtTokenProvider {
                         .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
-
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

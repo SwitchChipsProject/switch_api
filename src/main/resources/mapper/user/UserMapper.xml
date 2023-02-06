@@ -11,7 +11,7 @@
                u.role,
                u.created_at,
                u.certification_code,
-               u.certifiaction,
+               u.certification_yn,
                u.deleted_at,
                u.deleted_yn,
         FROM `user` u
@@ -43,26 +43,36 @@
     </insert>
 
     <select id="findByCertificationCode" resultType="UserEntity">
-        SELECT *
-        FROM user
+        SELECT
+            u.email,
+            u.password,
+            u.user_id,
+            u.nickname,
+            u.agree_yn,
+            u.certification_yn
+        from user u
         WHERE certification_code = #{termUuid}
     </select>
 
     <update id="updateEmailCertificationState">
         UPDATE user
-        SET certification= true
+        SET certification_yn= true
         WHERE user_id = #{userId}
     </update>
 
     <select id="findByUserEmail" resultType="UserEntity">
-        SELECT *
-        FROM user
+        SELECT u.email,
+               u.password,
+               u.user_id,
+               u.nickname,
+               u.agree_yn
+        FROM user u
         WHERE email = #{email}
     </select>
 
     <select id="findByUserId" resultType="Long">
-        SELECT user_id
-        FROM user
+        SELECT u.user_id
+        FROM user u
         WHERE user_id = #{userId}
     </select>
 

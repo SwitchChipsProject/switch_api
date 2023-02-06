@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -60,8 +59,8 @@ public class UserService {
     @Transactional
     public void certificationEmail(String termUuid) {
         UserEntity userEntity = userMapper.findByCertificationCode(termUuid);
-        if (!userEntity.isCertificatied())
-            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID, "인증되지 않은 이메일입니다.");
+        if (!userEntity.isCertificatedYn())
+            throw new BadRequestException(ExceptionEnum.REQUEST_PARAMETER_INVALID , "이미 인증된 메일입니다");
         userMapper.updateEmailCertificationState(userEntity.getUserId());
     }
 
