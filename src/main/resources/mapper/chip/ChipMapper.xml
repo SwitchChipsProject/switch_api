@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.switch_proj.api.api.chip.mapper.ChipMapper">
+    <resultMap id="ChipMap" type="ChipEntity">
+        <id property="chipId" column="chip_id"/>
+        <collection property="imageId" column="image_id" ofType="Image"
+                    select="com.switch_proj.api.api.image.mapper.ImageMapper.findByImageId"/>
+    </resultMap>
+
+    <select id="findAllChips" resultMap="ChipMap">
+        SELECT chip_id,
+               name,
+               image_id,
+               description
+        FROM chip
+    </select>
+    <insert id="saveChip" useGeneratedKeys="true" keyProperty="chipExchangeId" keyColumn="chip_exchange_id">
+        INSERT INTO chip_exchange
+        (owned_chip_id,
+         opposite_chip_id,
+         register_id)
+        VALUES (#{chipExchangeEntity.ownedChipId},
+                #{chipExchangeEntity.oppositeChipId},
+                #{chipExchangeEntity.registerId})
+    </insert>
+</mapper>
